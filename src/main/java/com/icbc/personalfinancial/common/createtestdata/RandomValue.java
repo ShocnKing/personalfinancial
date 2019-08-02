@@ -1,7 +1,6 @@
 package com.icbc.personalfinancial.common.createtestdata;
 
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -277,23 +276,6 @@ public class RandomValue {
         }
         return rtn;
     }
-
-//    public static int getBankIdByAddr(String  addr){
-//        switch (addr){
-//            case
-//        }
-//    }
-
-//    public static void main(String arg[]){
-//        System.out.println(getChineseName());
-//        System.out.println(getIdNo(true));
-//        System.out.println(getaddr());
-//        System.out.println(getTel());
-//        testRondomDate();
-//        System.out.println(getCardIdBuType(getCardType()));
-
-
-//    }
 
     /**
      * 数据封装

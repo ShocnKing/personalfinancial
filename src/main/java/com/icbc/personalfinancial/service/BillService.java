@@ -1,16 +1,20 @@
 package com.icbc.personalfinancial.service;
 
 
-import com.icbc.personalfinancial.dao.BillMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-
-@Resource
+@Service
 public class BillService {
 
-    @Autowired
-    private BillMapper billMapper;
 
 
+
+
+    /**
+     * 统计每一天的贷款数并更新bill表
+     */
+    private void countBillLoanByDay(){
+        //获取每天新增的贷款数，获取每个月还款后的剩余欠款数
+        //从2019.07.01开始计算每天的贷款数，每逢月初，减去一次所有人的还款
+    }
 }

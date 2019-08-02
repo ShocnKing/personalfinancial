@@ -17,8 +17,8 @@ public class Card implements Serializable {
     private  Integer cardType;
     private  Integer belongAccountId;
     private  Date createTime;
-    private  BigDecimal serviceCharge;
+    private  Double serviceCharge;
     private  Integer bankId;
-    private  BigDecimal cardMoney;
+    private  Double cardMoney;
     private  Date lastestTime;
 }

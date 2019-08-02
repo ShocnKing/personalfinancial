@@ -12,9 +12,10 @@ public class Loan implements Serializable {
 
     private  Integer id;
     private  Integer accountId;
-    private  BigDecimal loanMoney;
+    private  Double loanMoney;
     private  Integer longType;
     private  Date createTime;
-    private  BigDecimal serviceCharge;
+    private  Double serviceCharge;
     private  Integer bankId;
+    private  Integer flag;
 }

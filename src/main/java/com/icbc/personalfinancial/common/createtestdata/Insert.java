@@ -1,6 +1,8 @@
 package com.icbc.personalfinancial.common.createtestdata;
 
 
+
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -20,17 +25,24 @@ public class Insert {
 
 
     //几线城市的bankid
-    int[][] BANKCITY_LEV = {{3,4,6},{5,7,8,11},{9,10,12,14,15,20},{2,13,15,17,19,21,22},{18}};
+    int[][] BANKCITY_LEV = {{3,4,6},{5,7,8,11},{9,10,12,14,15,20},{2,13,16,17,19,21,22},{18}};
     final static int CARDNUMBER_LEV1  = 20;
     final static int CARDNUMBER_LEV2  = 16;
     final static int CARDNUMBER_LEV3  = 12;
     final static int CARDNUMBER_LEV4  = 8;
     final static int CARDNUMBER_LEV5  = 4;
+
     final static int METALNUMBER_LEV1  = 10;
     final static int METALNUMBER_LEV2  = 8;
     final static int METALNUMBER_LEV3  = 6;
     final static int METALNUMBER_LEV4  = 4;
     final static int METALNUMBER_LEV5  = 2;
+
+    final static int LOANNUMBER_LEV1  = 6;
+    final static int LOANNUMBER_LEV2  = 5;
+    final static int LOANNUMBER_LEV3  = 4;
+    final static int LOANNUMBER_LEV4  = 3;
+    final static int LOANNUMBER_LEV5  = 2;
 
 
     Connection conn = null;
@@ -41,7 +53,9 @@ public class Insert {
     int ccc= 1;
 
 
-
+    /**
+     * 插入user表
+     */
     public void insertUser(){
         try {
             Class.forName(driver);//指定连接类型
@@ -107,7 +121,9 @@ public class Insert {
         }
     }
 
-
+    /**
+     * 测试card表插入
+     */
     public void insertOneCard(){
         int temp = 0;
         Integer id = 0;
@@ -179,14 +195,10 @@ public class Insert {
 
     }
 
+    /**
+     * 插入card数据
+     */
     public void inserCardRan(){
-//        final String driver = "com.mysql.jdbc.Driver";
-//        final String url = "jdbc:mysql://149.28.26.45:3306/test";
-//        final String user = "root";
-//        final String password = "Kfzx_gzsb@01";
-//        Connection conn = null;
-//        PreparedStatement pst =  null;
-//        Random r = new Random();
         int temp = 0;
         Integer id = 22605;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -256,46 +268,10 @@ public class Insert {
 
     }
 
-    public void insertCardDetail()  {
-//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-//        Date start =  format.parse("2009-07-01 00:00:00");
-//        Date end =  format.parse("2019-07-01 00:00:00");
-//        for (Long i = start.getTime(); i < end.getTime();) {
-//        List<String> listDate ;
-//        listDate  = handleCirculationDate("2019-01-01","2009-01-01");
-//        Iterator<String> iterator  = listDate.iterator() ;
-//
-//        //遍历日期
-//        while(iterator.hasNext()) {
-//            //1.获取这一天的日期date，插入card表，不同城市创建不同张的初始卡，赋值
-//            String date = iterator.next();
-//            //2.插入carddetail，先获取card表这一天的date的卡列表，给每张卡转账まがせろ
-//            //3.将carddetail的转账情况同步到card表
-//            //4.metal表赋值今天日期date的数据
-//            //5。插入loan表
-//            //5.更新bill表，包括存储数、贷款数、中间业务
-//
-//            //获得当前时间
-//             //遍历五级
-//             int rowlength = BANKCITY_LEV.length;
-//             //城市级别
-//             int bank_lev = 0;
-//             int bankid = 0;
-//             //拿到城市的级别
-//             for (int i = 0; i < rowlength; i++) {
-//                 for (int j = 0; j < BANKCITY_LEV[i].length; j++) {
-//                     bankid = BANKCITY_LEV[i][j];
-//                     bank_lev = i;
-//                     insertCardByDateAndBankLev(date,bankid,bank_lev);
-//             }
-//             }
-//
-//        }
-//
-        insertCardByDateAndBankLev();
-    }
 
-    //String date,int bankid,int bank_lev
+    /**
+     * 插入card,cardtrandetial,bill数据
+     */
     public void insertCardByDateAndBankLev(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         int temp = 0;
@@ -358,7 +334,7 @@ public class Insert {
                     int bank_lev = 0;
                     int bankid = 0;
                     //遍历每天
-                    for (Long l = m; l < m + 604800000; l += 86400000) {
+                    for (Long l = m; l < m + 604800000 && l<end.getTime(); l += 86400000) {
                         //拿到城市的级别，并遍历城市
                         for (int i = 0; i < rowlength; i++) {
                             for (int j = 0; j < BANKCITY_LEV[i].length; j++) {
@@ -459,6 +435,22 @@ public class Insert {
         }
     }
 
+    /**
+     * 判断等级
+     * @param bank_lev
+     * @return
+     */
+    public int judgeLoan(int bank_lev){
+        switch (bank_lev){
+            case 0:return LOANNUMBER_LEV1;
+            case 1:return LOANNUMBER_LEV2;
+            case 2:return LOANNUMBER_LEV3;
+            case 3:return LOANNUMBER_LEV4;
+            case 4:return LOANNUMBER_LEV5;
+            default:return 0;
+        }
+    }
+
     public int judgecard(int bank_lev){
         switch (bank_lev){
             case 0:return CARDNUMBER_LEV1;
@@ -481,7 +473,9 @@ public class Insert {
         }
     }
 
-    //插入贵金属表
+    /**
+     * 插入贵金属表
+     */
     public void insertMetal(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         HashMap<Integer,BigDecimal> metalsum = new HashMap<>();//key:bankid
@@ -497,11 +491,7 @@ public class Insert {
                 beginTime = new Date().getTime();//开始计时
                 //插入metal表的insert语句
                 String sqlPrefix = "INSERT INTO  metal(metalType, money, serviceCharge, createTime, bankid) VALUES    ";
-                // 插入bill表的insert语句
-                String sqlPrefix2 = "INSERT INTO  bill(bankId,day,business,money) VALUES    ";
-
                 StringBuffer suffix = new StringBuffer();//插入metal表的insert语句
-                StringBuffer suffix2 = new StringBuffer();//插入bill表的insert语句
                 // 设置事务为非自动提交
                 conn.setAutoCommit(false);
                 // 比起st，pst会更好些
@@ -512,13 +502,16 @@ public class Insert {
                 Date start =  format.parse("2009-07-01 00:00:00");
                 Date end =  format.parse("2019-07-01 00:00:00");
 
-                for(Long m = start.getTime(); m<end.getTime(); m +=604800000) {
+
+                for(Long m = start.getTime(); m<end.getTime(); m +=31536000000L) {
+
+                    //遍历每个城市的分行
                     for (int i = 0; i < rowlength; i++){
                         for (int j = 0; j < BANKCITY_LEV[i].length; j++){
                             bankid = BANKCITY_LEV[i][j];
                             bank_lev = i;
                             metalnumber = judgemetal(bank_lev);
-                            for (Long l = m; l < m + 604800000; l += 86400000) {
+                            for (Long l = m; l < m + 31536000000L; l += 86400000) {
                                 int metaltemp = 0;
                                 for (int k = 1; k <=metalnumber ; k++) {//几次
 
@@ -531,10 +524,6 @@ public class Insert {
                                     suffix.append("('" + "gold"+"'," + metalMoney+"," +metalMoney*0.0042+",'"+ date+"',"+bankid+"),");
 
                                 }
-//                                Date dl = new Date(l);
-//                                String datel = format.format(dl);
-//                                suffix2.append("(" +bankid+ ",'"+ datel+"'"+ ""+"'"+"'),");
-
                                 }
                     // 构建完整SQL
                     String sql = sqlPrefix + suffix.substring(0, suffix.length() - 1);
@@ -580,70 +569,118 @@ public class Insert {
     }
         }
 
+
+    /**
+     * 插入loan，loandetail表数据
+     */
     public void insertloan(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         HashMap<Integer,BigDecimal> metalsum = new HashMap<>();//key:bankid
+        LocalDate localDate = LocalDate.now();
+        int loanId,id = 0;
+        int monthNum;
+        double loanMoney,serviceCharge,latestMoney,tranMoney,owe;
         try {
             int rowlength = BANKCITY_LEV.length;
             int bankid;
             int bank_lev;
-            int metalnumber;
+            int loanNumber;
             Class.forName(driver);//指定连接类型
+
+            //插入loan表的insert语句
+            String sqlPrefix = "INSERT INTO  loan(id,accountId, loanMoney, latestMoney, loanType, creatTime, serviceCharge, bankId, flag) VALUES    ";
+            // 插入loandetail表的insert语句
+            String sqlPrefix2 = "INSERT INTO  loandetail(loanId,tranMoney,owe,creatTime) VALUES    ";
+
+            //1、accountId暂定为1，loanMoney随机50~150万，期限均为15年
+            //2、latestMoney根据贷款日期直接计算出2019年七月一日时的最新欠款
+            //3、loanType默认为0，creatTime遍历日期，serviceCharge为贷款金额的4.35%
+            //4、bankId遍历城市，flag标志是否还清贷款，默认为0未还清
+            //5、生成贷款的时候就需要生成还款记录loandetail，插入外键loanId
+            //6、根据loanMoney+serviceCharge计算每个月还款额tranMoney，并计算出用户此次还款后的的欠款owe
+            //7、还款时间设置为每月3号，3号之前的贷款均从3号开始还
+
+
+            StringBuffer suffix = new StringBuffer();//插入loan表的insert语句
+            StringBuffer suffix2 = new StringBuffer();//插入loandetail表的insert语句
+
+            // 外层循环，总提交事务次
             conn = DriverManager.getConnection(url, user, password);
             if(conn != null) {
                 System.out.println("获取连接成功");
                 beginTime = new Date().getTime();//开始计时
-                //插入loan表的insert语句
-                String sqlPrefix = "INSERT INTO  loan(accountId, loanMoney, latestMoney, loanType, creatTime, serviceCharge, bankId, flag) VALUES    ";
-                // 插入bill表的insert语句
-                String sqlPrefix2 = "INSERT INTO  bill(bankId,day,business,money) VALUES    ";
-
-                StringBuffer suffix = new StringBuffer();//插入metal表的insert语句
-                StringBuffer suffix2 = new StringBuffer();//插入bill表的insert语句
                 // 设置事务为非自动提交
                 conn.setAutoCommit(false);
                 // 比起st，pst会更好些
-                pst = (PreparedStatement) conn.prepareStatement("");//准备执行语句
-                // 外层循环，总提交事务次
-                suffix = new StringBuffer();
+                pst =  conn.prepareStatement("");//准备执行语句
 
                 Date start =  format.parse("2009-07-01 00:00:00");
                 Date end =  format.parse("2019-07-01 00:00:00");
 
-                for(Long m = start.getTime(); m<end.getTime(); m +=604800000) {
+//                List<String> listDate ;
+//                listDate  = handleCirculationDate("2019-01-01","2009-01-01");
+//                Iterator<String> iterator  = listDate.iterator() ;
+//
+//                //遍历日期
+//                while(iterator.hasNext()) {
+//                    String everyday = iterator.next();
+//                }
+//                Period.between(LocalDate.parse(fromDate), LocalDate.parse(toDate));
+                //每年执行一次sql
+                for(Long m = start.getTime(); m<end.getTime(); m +=31536000000L) {
+                    System.out.println(new Date(m));
+                    //遍历城市
                     for (int i = 0; i < rowlength; i++){
                         for (int j = 0; j < BANKCITY_LEV[i].length; j++){
                             bankid = BANKCITY_LEV[i][j];
                             bank_lev = i;
-                            metalnumber = judgemetal(bank_lev);
-                            for (Long l = m; l < m + 604800000; l += 86400000) {
-                                int metaltemp = 0;
-                                for (int k = 1; k <=metalnumber ; k++) {//几次
+                            loanNumber = judgeLoan(bank_lev);
+                            for (Long l = m; l < m + 31536000000L && l<end.getTime(); l += 86400000) {
+                                for (int k = 1; k <=loanNumber ; k++) {//几次
+                                    ++id;
+                                    loanId = id;
+                                    loanMoney = (r.nextInt(100)+50)*10000;
+                                    serviceCharge = loanMoney* 0.045;
+                                    tranMoney = (loanMoney+serviceCharge)/180;
 
                                     // 构建SQL后
                                     //每次随机一个时间
                                     Date d = new Date(r.nextInt(86400000) + l);
                                     String date = format.format(d);
-                                    int metalMoney = (r.nextInt(99) + 1) * 10000;
-                                    metaltemp+=metalMoney;
-                                    suffix.append("('" + "gold"+"'," + metalMoney+"," +metalMoney*0.0042+",'"+ date+"',"+bankid+"),");
+                                    //返回当前日期距离2019.07.01多少个月
+                                    monthNum = getMonthNum(date);
+                                    latestMoney = loanMoney - tranMoney*(monthNum-1);
+                                    suffix.append("("+ id+","+1+","+loanMoney +","+latestMoney+","+0+",'"+date+"',"+ serviceCharge+","+bankid+","+0 +"),");
 
+                                    //插入此贷款的所有还款记录
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(d);
+
+                                    for(int month = 0 ; month < monthNum; month++) {
+                                        calendar.set(Calendar.DAY_OF_MONTH,3);
+                                        String repayDay = format.format(calendar.getTime());
+                                        loanMoney -= tranMoney;
+                                        suffix2.append("(" + id + "," + tranMoney + ","+ loanMoney +  ",'"+ repayDay+  "'),");
+                                        calendar.add(Calendar.MONTH, 1);
+                                    }
                                 }
-//                                Date dl = new Date(l);
-//                                String datel = format.format(dl);
-//                                suffix2.append("(" +bankid+ ",'"+ datel+"'"+ ""+"'"+"'),");
-
                             }
                             // 构建完整SQL
                             String sql = sqlPrefix + suffix.substring(0, suffix.length() - 1);
+                            String sql2 = sqlPrefix2 + suffix2.substring(0, suffix2.length() - 1);
+
+
                             // 添加执行SQL
                             pst.addBatch(sql);
+                            pst.addBatch(sql2);
                             // 执行操作
                             pst.executeBatch();
                             // 提交事务
                             conn.commit();
                             // 清空上一次添加的数据
                             suffix = new StringBuffer();
+                            suffix2 = new StringBuffer();
+
                         }
                     }
                 }
@@ -656,7 +693,7 @@ public class Insert {
             System.out.println("com.mysql.jdbc.Driver驱动类没有找到");
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("数据库地址错误");
+            System.out.println("sql错误");
         } catch (ParseException e) {
             e.printStackTrace();
         } finally {//释放资源
@@ -678,6 +715,25 @@ public class Insert {
         }
     }
 
+    /**
+     * 返回距离2019年七月有几个月
+     * @param date
+     * @return
+     */
+    public int getMonthNum(String date) {
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        int month = 0;
+        month = Period.between(LocalDate.parse(date,dateTimeFormat), LocalDate.parse("2019-07-31 23:59:59",dateTimeFormat)).getMonths();
+        month +=  Period.between(LocalDate.parse(date,dateTimeFormat), LocalDate.parse("2019-07-31 23:59:59",dateTimeFormat)).getYears()*12;
+        return month;
+    }
+
+    /**
+     * 返回两个日期之间每日的String列表
+     * @param today
+     * @param passday
+     * @return
+     */
     public List<String> handleCirculationDate(String today,String passday){
         List<String> listDate = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

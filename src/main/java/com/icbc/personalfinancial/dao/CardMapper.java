@@ -3,13 +3,11 @@ package com.icbc.personalfinancial.dao;
 
 import com.icbc.personalfinancial.entity.Card;
 import com.icbc.personalfinancial.entity.User;
+import com.icbc.personalfinancial.model.CardData;
 import org.apache.ibatis.annotations.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Timestamp;
-import java.util.Date;
+
 import java.util.List;
-import java.util.SplittableRandom;
 
 @Mapper
 public interface CardMapper {
@@ -109,5 +107,15 @@ public interface CardMapper {
             " group by bankName   " +
             " having bankName = #{bankName} ")
     Integer findCountByBankAndTime(@Param("date1") String  date1, @Param("date2") String date2, @Param("bankName") String  bankName);
+
+//    @Select("select count(*) as cardNum,bankname as bankName,DATE_FORMAT(createtime,'%Y-%m-%d') as time from card inner join bank on card.bankId = bank.id " +
+//            "group by time,bankName having bankName = #{bankname}")
+    @Select("select b.num as cardNum, a.bankName as bankName,b.time as time from bank a inner join" +
+            "    (select bankid,count(id) as num,DATE_FORMAT(createTime,'%Y-%m-%d') as time from card force index (createtime_index) " +
+            "   where createTime BETWEEN '2009-01-01 00:00:00' and '2019-01-01 00:00:00' and  bankid = (select id from bank where bankname= #{bankname})  " +
+            "   group by time ) as b" +
+            "        on a.id = b.bankId ")
+    List<CardData> getCountByBankName(@Param("bankname") String bankName);
+
 
 }

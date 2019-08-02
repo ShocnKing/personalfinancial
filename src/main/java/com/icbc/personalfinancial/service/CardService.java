@@ -1,20 +1,14 @@
 package com.icbc.personalfinancial.service;
 
 
-import com.icbc.personalfinancial.common.createtestdata.RedisUtil;
 import com.icbc.personalfinancial.dao.CardMapper;
 import com.icbc.personalfinancial.entity.Card;
 import com.icbc.personalfinancial.entity.User;
-import org.apache.ibatis.annotations.Select;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.icbc.personalfinancial.model.CardData;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
-import javax.xml.crypto.Data;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,6 +33,7 @@ public class CardService {
         return this.cardMapper.findUserIdbByAccountId(id);
     }
 
+    @Cacheable(value = "cache1" , key = "#userId")
     public String findAddrByUserId(String userId){ return this.cardMapper.findAddrByUserId(userId); }
 
     public int findBankIdByBankAddr(String addr){
@@ -57,5 +52,8 @@ public class CardService {
         return  this.cardMapper.findCountByBankAndTime(date1,date2,bankName);
     }
 
-
+    @Cacheable(value = "Cache1" , keyGenerator =  "keyGenerator")
+    public List<CardData> getCountByBankName(String bankName){
+        return this.cardMapper.getCountByBankName(bankName);
+    }
 }

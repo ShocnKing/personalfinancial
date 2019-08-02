@@ -2,42 +2,46 @@ package com.icbc.personalfinancial;
 
 import com.icbc.personalfinancial.common.createtestdata.Insert;
 import com.icbc.personalfinancial.common.createtestdata.RandomValue;
-import com.icbc.personalfinancial.common.createtestdata.RedisUtil;
 import com.icbc.personalfinancial.entity.User;
 import com.icbc.personalfinancial.service.CardService;
+import com.icbc.personalfinancial.service.RedisService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.Jedis;
-
-import java.text.ParseException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PersonalfinancialApplicationTests {
 
+
     @Autowired
-    RedisUtil  redisUtil;
+    private StringRedisTemplate template;
 
     @Autowired
     CardService cardService;
 
-    @Test
-    public void contextLoads() {
+    @Autowired
+    RedisService redisService;
 
-        Jedis jedis1 = redisUtil.getJedis();
-        jedis1.set("name","Jack");
-        System.out.println(jedis1.get("name"));
+    @Test
+    public void setTest()  {
+        System.out.println(cardService.findAddrByUserId("211221193204229111"));
     }
 
     @Test
     public void insert()  {
         Insert insert = new Insert();
-        insert.insertMetal();
+        insert.insertloan();
     }
 
+    @Test
+    public void getCountByBankName(){
+        System.out.println(cardService.getCountByBankName("广州分行"));
+    }
 
 
     @Test
